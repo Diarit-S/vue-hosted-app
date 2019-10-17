@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 const mongoose = require('mongoose');
+const index = require('./routes');
 
 mongoose.connect('mongodb+srv://jean:golousisi@cluster0-ioiid.mongodb.net/vue-application?retryWrites=true&w=majority',
 {
@@ -21,6 +22,8 @@ var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../client-build')));
+
+app.use(index);
 
 app.get('*', (req, res)=> {
   res.sendFile(path.join(__dirname, '../client-build/index.html'))

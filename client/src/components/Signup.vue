@@ -4,7 +4,7 @@
     <form @submit.prevent="trySubmit" class="text-left" action="">
       <div class="form-group">
         <label for="">Email</label>
-        <input class="form-control" v-model="form.eamil" type="email">
+        <input class="form-control" v-model="form.email" type="email">
       </div>
       <div class="form-group">
         <label for="">Username</label>
@@ -14,15 +14,16 @@
         <label for="">Password</label>
         <input class="form-control" v-model="form.password" type="password">
       </div>
-      <button class="btn btn-primary" type="submit">Envoyer</button>
-      <ul v-if="errors.length">
-        <li v-for="error in errors" :key="error" class="text-danger">{{error}}</li>
+      <button class="btn btn-primary" :class="{'disabled': isLoading}" type="submit">Envoyer</button>
+      <ul v-if="formErrors.length">
+        <li v-for="error in formErrors" :key="error" class="text-danger">{{error}}</li>
       </ul>
     </form>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Signup',
@@ -33,19 +34,31 @@ export default {
         username: '',
         password: ''
       },
-      errors: []
+      formErrors: []
     }
   },
-  components: {
+  computed: {
+    ...mapGetters('user', ['isLoading', 'errors'])
+  },
+  watch: {
+    errors(newValue) {
+      this.formErrors = newValue;
+    }
   },
   methods: {
     trySubmit() {
-      if (this.isValid()) {
+      if (this.isValid() && !this.isLoading) {
+        this.$store.dispatch('user/trySignup', this.form)
         console.log(this.form);
       }
     },
     isValid() {
-      return true;
+      this.formErrors = [];
+      const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+      if (!emailRegex.test(this.form.email)){
+        this.formErrors.push('Email non valide');
+      }
+      return this.formErrors.length === 0;
     }
   }
 }
