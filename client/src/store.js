@@ -27,8 +27,8 @@ const user = {
     async trySignin(context, credentials) {
       try {
         context.commit('updateIsLoading', true);
-        const data = await axios.post("/api/auth", credentials);
-        context.commit('signinSuccess', data);
+        const response = await axios.post("/api/auth", credentials);
+        context.commit('signinSuccess', response.data);
         router.push('/profil')
       } catch (e) {
         context.commit('signError', e);

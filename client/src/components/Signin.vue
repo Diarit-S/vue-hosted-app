@@ -13,12 +13,13 @@
       <ul v-if="errors.length">
         <li class="text-danger" v-for="error in errors" :key="error">{{ error }}</li>
       </ul>
-      <button class="btn btn-primary">connexion</button>
+      <button class="btn btn-primary" :class="{'disabled': isLoading}">connexion</button>
     </form>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Signin',
@@ -29,20 +30,17 @@ export default {
         username: '',
         password: ''
       },
-      errors: []
     }
   },
-  components: {
+  computed: {
+    ...mapGetters('user', ['isLoading', 'errors'])
   },
   methods: {
     trySubmit() {
-      if (this.isValid()) {
-        console.log(this.form);
+      if (!this.isLoading) {
+        this.$store.dispatch('user/trySignin', this.form)
       }
     },
-    isValid() {
-      return true;
-    }
   }
 }
 </script>
