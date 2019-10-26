@@ -10,13 +10,13 @@
         <label>Password</label>
         <input class="form-control" v-model="form.password" type="password">
       </div>
-      <ul v-if="errors.length">
-        <li class="text-danger" v-for="error in errors" :key="error">{{ error }}</li>
-      </ul>
+        <ul v-if="errors.length">
+          <li class="text-danger" v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
       <button class="btn btn-primary" :class="{'disabled': isLoading}">connexion</button>
     </form>
   </div>
-</template>
+</template> 
 
 <script>
 import { mapGetters } from 'vuex';

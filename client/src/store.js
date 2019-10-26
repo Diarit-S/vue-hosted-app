@@ -2,7 +2,7 @@
 
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from "axios";
+import axios from "./http";
 import router from "./router";
 
 Vue.use(Vuex);
@@ -13,7 +13,7 @@ const user = {
     data: {},
     isLoading: false,
     isLoggedIn: false,
-    jwtToken: null,
+    jwtToken: (localStorage.getItem("jwtToken") ? localStorage.getItem("jwtToken") : null),
     errors: []
   },
   getters: {
@@ -29,7 +29,7 @@ const user = {
         context.commit('updateIsLoading', true);
         const response = await axios.post("/api/auth", credentials);
         context.commit('signinSuccess', response.data);
-        router.push('/profil')
+        router.push('/profil');
       } catch (e) {
         context.commit('signError', e);
       }
@@ -60,17 +60,17 @@ const user = {
     },
     signinSuccess(state, data) {
       state.isLoading = false;
-      state.errors = null;
+      state.errors = [];
       state.isLoggedIn = true;
       state.data = data.user;
       state.jwtToken = data.jwtToken;
+      localStorage.setItem('jwtToken', data.jwtToken)
     },
     signupSuccess(state) {
       state.isLoading = false;
-      state.errors = null;
+      state.errors = [];
     },
     signError(state, errors){
-      console.log(errors);
       state.isLoading = false;
       state.errors = errors.response.data;
     },
@@ -80,7 +80,7 @@ const user = {
     fetchCurrentUserSuccess(state, user) {
       state.data = user;
       state.isLoading = false;
-      state.errors = null;
+      state.errors = [];
     }
   }
 };
