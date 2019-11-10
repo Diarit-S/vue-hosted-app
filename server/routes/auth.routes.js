@@ -6,9 +6,9 @@ const JWT_SECRET = require("../config/jwt");
 
 router.post("/", async (req, res, next) => {
   const body = req.body;
-
+  
   try {
-    const user = await User.findOne({ email: body.email }).exec();
+    const user = await User.findOne({ email: body.email }, "-__v", {}).exec();
     if (!user) {
       return res.status(400).json(["user does not exist"]);
     }
